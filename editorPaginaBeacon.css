@@ -1,0 +1,40 @@
+#labelInfoUtente{
+    display: inline-block;
+    margin-left:1%;
+    position: relative;
+    bottom: 7px;
+}
+
+.clickable{
+    cursor: pointer;
+}
+
+button{
+    margin:1px 1px 1px 1px;
+}
+
+#popupVideo .hidden{
+    display: none;
+}
+
+#popupVideo{
+    border: 1px solid black;
+    z-index: 1;
+    position: absolute;
+    left: 25%;
+    top:20%;
+    background: white;
+    width: 55%;
+    height: 25%;
+}
+
+.editable{
+    font-size: 20pt;
+}
+div{
+    margin-top: 15px;
+}
+
+p{
+    font-size: 18pt;
+}

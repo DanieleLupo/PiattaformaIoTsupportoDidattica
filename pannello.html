@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sistema</title>
+        <meta charset="UTF-8">
+        <script src="./js/gestoreCookie.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnLdKhEeV1qo2-8ipf7YdKMe0tLGShsNc"></script>
+        <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="./pannello.css">
+    </head>
+    <body>
+        <!-- Barra -->
+        <div style="background:#FF9900; height:50px">
+            <!-- Informazioni utente loggato -->
+            <h3 id="labelInfoUtente"></h3>
+            <!-- Tasti funzioni -->
+            <span id="operazioni">
+                <button class="btn" style="background:none" onclick="javascript:document.location.reload()">
+                    <img src="./icone/home.png"><br>Home</img>
+                </button>
+                <span class="dropdown" id="dropdownBeacon">
+                    <button class="btn">
+                        <img src="./icone/beacon.png"><br>Beacon</img>
+                    </button>
+                    <span style="text-align:center" class="dropdown-content">
+                        <span class="content-dropdown-content">
+                            <button name="Aggiungi beacon" class="btn" onclick="aggiungiBeacon()">
+                                <img src="./icone/add.png"/><br>Aggiungi
+                            </button>
+                        </span>
+                        <span class="content-dropdown-content">
+                            <button name="Rimuovi beacon" class="btn" onclick="rimuoviBeacon()">
+                                <img src="./icone/remove.png"/><br>Rimuovi
+                            </button>
+                        </span>
+                        <span class="content-dropdown-content">
+                            <button name="Associa beacon" class="btn" onclick="associaBeacon()">
+                                <img src="./icone/link.png"/><br>Associa
+                            </button>
+                        </span>
+                        <span class="content-dropdown-content">
+                            <button name="Dissocia beacon" class="btn" onclick="dissociaBeacon()">
+                                <img src="./icone/unlink.png"/><br>Dissocia
+                            </button>
+                        </span>
+                        <span class="content-dropdown-content">
+                            <button name="Gestisci beacons" class="btn" onclick="gestisciBeacons()">
+                                <img src="./icone/setup.png"/><br>Gestisci
+                            </button>
+                        </span>
+                    </span>
+                </span>
+                <span class="dropdown" id="dropdownPermessi">
+                    <button class="btn">
+                        <img src="./icone/permesso.png"><br>Permesso</img>
+                    </button>
+                    <span style="text-align:center" class="dropdown-content">
+                        <span class="content-dropdown-content">
+                            <button name="Aggiungi permesso" class="btn" onclick="aggiungiPermesso()">
+                                <img src="./icone/add.png"/><br>Aggiungi
+                            </button>
+                        </span>
+                        <span class="content-dropdown-content">
+                            <button name="Rimuovi permesso" class="btn" onclick="rimuoviPermesso()">
+                                <img src="./icone/remove.png"/><br>Rimuovi
+                            </button>
+                        </span>
+                        <span class="content-dropdown-content">
+                            <button name="Associa permesso" class="btn" onclick="associaPermesso()">
+                                <img src="./icone/link.png"/><br>Associa
+                            </button>
+                        </span>
+                        <span class="content-dropdown-content">
+                            <button name="Dissocia permesso" class="btn" onclick="dissociaPermesso()">
+                                <img src="./icone/unlink.png"/><br>Dissocia
+                            </button>
+                        </span>
+                        <span class="content-dropdown-content">
+                            <button name="Gestisci permesso" class="btn" onclick="gestisciPermesso()">
+                                <img src="./icone/setup.png"/><br>Gestisci
+                            </button>
+                        </span>
+                    </span>
+                </span>
+                <span class="dropdown" id="dropdownUtente">
+                    <button class="btn">
+                        <img src="./icone/utente.png"><br>Utente</img>
+                    </button>
+                    <span style="text-align:center" class="dropdown-content">
+                        <span class="content-dropdown-content">
+                            <button name="Aggiungi utente" class="btn" onclick="aggiungiUtente()">
+                                <img src="./icone/add.png"/><br>Aggiungi
+                            </button>
+                        </span>
+                        <span class="content-dropdown-content">
+                            <button name="Rimuovi utente" class="btn" onclick="rimuoviUtente()">
+                                <img src="./icone/remove.png"/><br>Rimuovi
+                            </button>
+                        </span>
+                        <span class="content-dropdown-content">
+                            <button name="Gestisci utente" class="btn" onclick="gestisciUtente()">
+                                <img src="./icone/setup.png"/><br>Gestisci
+                            </button>
+                        </span>
+                    </span>
+                </span>
+                <!-- Pulsante di logout -->
+                <button style="background:none;" class="buttonLogout btn" onclick="logout('infoUtente')"><img src="./icone/logout.png" alt="Esci"><br>Esci</button>
+            </span>
+        </div>
+        <!-- FINE barra -->
+        <!-- Riga per le descrizioni -->
+        <span class="row">
+            <div class="row descrizione descrizioneHome">
+                <h1>Mappa Ateneo</h1>
+                <h4>
+                    Per facilitare la ricerca sono stati inseriti dei filtri sul lato sinistro.<br>
+                    Selezionando il marker nella mappa, verranno visualizzate le informazioni del relativo beacon sulla destra.<br>
+                    Solo il docente assegnato al beacon selezionato potrà modificare le relative informazioni.<br>
+                </h4>
+            </div>
+            <div class="row descrizione descrizioneAggiungiBeacon">
+                <h1>Aggiungi beacon</h1>
+                <h4>Consente di aggiungere un nuovo beacon.<br>
+                    Selezionando l'edificio e il piano, verrà mostrata la mappa.<br>
+                    *Tutti i campi sono obbligatori.
+                </h4>
+            </div>
+            <div class="row descrizione descrizioneRimuoviBeacon">
+                <h1>Rimuovi beacon</h1>
+                <h4>Consente di rimuovere il beacon selezionato.<br>Procedendo con l'eliminazione, verranno dissociati anche gli eventuali docenti.</h4>
+            </div>
+            <div class="row descrizione descrizioneAssociaBeacon">
+                <h1>Associa beacon</h1>
+                <h4>Permette di associare il beacon selezionato al docente selezionato.</h4>
+            </div>
+            <div class="row descrizione descrizioneDissociaBeacon">
+                <h1>Dissocia beacon</h1>
+                <h4>Permette di dissociare il beacon selezionato dal docente selezionato.</h4>
+            </div>
+            <div class="row descrizione descrizioneGestisciBeacon">
+                <h1>Gestisci beacon</h1>
+                <h4>Permette di modificare le informazioni riguardanti il beacon.</h4>
+            </div>
+            <div class="row descrizione descrizioneAggiungiUtente">
+                <h1>Aggiungi utente</h1>
+                <h4>Permette di aggiungere un nuovo docente.<br>*Tutti i campi sono obbligatori.</h4>
+            </div>
+            <div class="row descrizione descrizioneRimuoviUtente">
+                <h1>Rimuovi utente</h1>
+                <h4>Permette di rimuovere il docente selezionato.<br>
+                    Procedento con l'eliminazione verranno dissociati gli eventuali beacon e permessi.
+                </h4>
+            </div>
+            <div class="row descrizione descrizioneGestisciUtente">
+                <h1>Gestisci utente</h1>
+                <h4>Permette di modificare le informazioni del docente selezionato.<br>*Tutti i campi sono obbligatori.</h4>
+            </div>
+            <div class="row descrizione descrizioneAggiungiPermesso">
+                <h1>Aggiungi permesso</h1>
+                <h4>Permette di creare un nuovo permesso.</h4>
+            </div>
+            <div class="row descrizione descrizioneRimuoviPermesso">
+                <h1>Rimuovi permesso</h1>
+                <h4>Permette di rimuovere il permesso selezionato.<br>
+                    Procedendo con l'eliminazione verranno dissociati anche gli eventuali docenti.
+                </h4>
+            </div>
+            <div class="row descrizione descrizioneAssociaPermesso">
+                <h1>Associa permesso</h1>
+                <h4>Permette di associare il permesso selezionato al docente selezionato.</h4>
+            </div>
+            <div class="row descrizione descrizioneDissociaPermesso">
+                <h1>Dissocia permesso</h1>
+                <h4>Permette di dissociare il permesso selezionato dal docente selezionato.</h4>
+            </div>
+            <div class="row descrizione descrizioneGestisciPermesso">
+                <h1>Gestisci permesso</h1>
+                <h4>Permette di modificare le informazioni del permesso selezionato.<br>
+                    *Tutti i campi sono obbligatori.
+                </h4>
+            </div>
+        </span>
+        <!-- FINE riga descrizioni -->
+        <!-- Riga per le funzionalità. -->
+        <!-- Idea: nelle pagine dei beacons mostro la mappa con i filtri, quelle senza beacons nascondo la mappa -->
+        <span class="row">
+            <!-- Spazio per la selezione di edificio e piano -->
+            <span class="col-sm-2" id="spazioPreFiltriMappa"></span>
+            <span class="col-sm-1" style="padding-left:35px;" id="spanFiltriMappa">
+                <label for="selectEdificioMappaGrande">Edificio</label>
+                <select class="form-control" id="selectEdificioMappaGrande" onchange="popoloSelectPiano()"></select>
+                <label for="selectPianoMappaGrande">Piano</label>
+                <select class="form-control" id="selectPianoMappaGrande" onclick="caricaMappa()"></select>
+            </span>
+            <!-- Spazio per la mappa -->
+            <span class="col-sm-3" style="background:none; text-align:center" id="spanMappa">
+                <div id="map" style="border:1px solid black; height:400px"></div>
+            </span>
+            <!-- Spazio funzionalità -->
+            <span class="col-sm-3" id="spazioPreFunzionalita"></span>
+            <!-- Home -->
+            <span class="col-sm-4 funzione" id="funzioneHome">
+                <label class="control-label" for="macBeaconSelezionato">MAC</label><input class="form-control" id="macBeaconSelezionato" readonly required></input>
+                <label class="control-label" for="nomeBeaconSelezionato">Nome</label><input class="form-control" id="nomeBeaconSelezionato" required></input>
+                <label class="control-label" for="descrizioneBeaconSelezionato">Descrizione</label><input class="form-control" id="descrizioneBeaconSelezionato" required></input>
+                <span class="row">
+                    <span class="col-sm-6">
+                        <label class="control-label" for="latBeaconSelezionato">Latitudine</label><input class="form-control" id="latBeaconSelezionato" required></input>
+                    </span>
+                    <span class="col-sm-6">
+                        <label class="control-label" for="lngBeaconSelezionato">Longitudine</label><input class="form-control" id="lngBeaconSelezionato" required></input>
+                    </span>
+                </span>
+                <span class="row">
+                    <span class="col-sm-6">
+                        <label style="margin-left:3%" class="control-label" for="edificioBeaconSelezionato">Edificio</label><input class="form-control" id="edificioBeaconSelezionato" required></input>
+                    </span>
+                    <span class="col-sm-6">
+                        <label class="control-label" for="pianoBeaconSelezionato">Piano</label><input class="form-control" id="pianoBeaconSelezionato" required></input>                    
+                    </span>
+                </span>
+                <span class="row" style="text-align:center">
+                    <span class="col-sm-6">
+                        <button id="btSalvaBeaconSelezionato"class="btn" onclick="salvaBeaconSelezionato()">Salva</button>
+                    </span>
+                    <span class="col-sm-6">
+                        <button id="btVisualizzaPaginaBeaconSelezionato" class="btn" onclick="visualizzaPaginaBeaconSelezionato()">Visualizza pagina</button>
+                    </span>
+                </span>
+            </span>
+            <!-- FINE Home -->
+            <!-- Aggiungi beacon -->
+            <span class="col-sm-4 funzione" id="funzioneAggiungiBeacon">
+                <form>
+                    <label class="control-label" for="macNuovoBeacon">MAC</label><input class="form-control" id="macNuovoBeacon" required></input>
+                    <label class="control-label" for="nomeNuovoBeacon">Nome</label><input class="form-control" id="nomeNuovoBeacon" required></input>
+                    <label class="control-label" for="descrizioneNuovoBeacon">Descrizione</label><input class="form-control" id="descrizioneNuovoBeacon" required></input>
+                    <span class="row">
+                        <span class="col-sm-6">
+                            <label class="control-label" for="latNuovoBeacon">Latitudine</label><input class="form-control" id="latNuovoBeacon" required></input>
+                        </span>
+                        <span class="col-sm-6">
+                            <label class="control-label" for="lngNuovoBeacon">Longitudine</label><input class="form-control" id="lngNuovoBeacon" required></input>
+                        </span>
+                    </span>
+                    <span class="row">
+                        <span class="col-sm-6">
+                            <label class="control-label" for="edificioNuovoBeacon">Edificio</label><input class="form-control" id="edificioNuovoBeacon" required></select>
+                        </span>
+                        <span class="col-sm-6">
+                            <label class="control-label" for="pianoNuovoBeacon">Piano</label><input class="form-control" id="pianoNuovoBeacon" required></select>
+                        </span>
+                    </span>
+                    <br>
+                    <span>
+                        <span class="col-sm-4" style="text-align:center">
+                            <button class="btn btn-primary" onclick="confermaAggiungiBeacon()">Conferma</button>
+                        </span>
+                        <span class="col-sm-4"></span>
+                        <span class="col-sm-4" style="text-align:center">
+                            <button class="btn btn-reset" type="reset" onclick="javascript:document.location.reload()">Annulla</button>
+                        </span>
+                    </span>
+                </form>
+            </span>
+            <!-- FINE Aggiungi beacon -->
+            <!-- Rimuovi beacon -->
+            <span class="col-sm-4 funzione" id="funzioneRimuoviBeacon">
+                <form>
+                    <label class="control-label" for="macBeaconDaEliminare">MAC</label><select class="form-control" id="macBeaconDaEliminare" required></select>
+                    <label class="control-label" for="nomeBeaconDaEliminare">Nome</label><input class="form-control" id="nomeBeaconDaEliminare" required></input>
+                    <label class="control-label" for="descrizioneBeaconDaEliminare">Descrizione</label><input class="form-control" id="descrizioneBeaconDaEliminare" required></input>
+                    <span class="row">
+                        <span class="col-sm-6">
+                            <label class="control-label" for="latBeaconDaEliminare">Latitudine</label><input class="form-control" id="latBeaconDaEliminare" required></input>
+                        </span>
+                        <span class="col-sm-6">
+                            <label class="control-label" for="lngBeaconDaEliminare">Longitudine</label><input class="form-control" id="lngBeaconDaEliminare" required></input>
+                        </span>
+                    </span>
+                    <span class="row">
+                        <span class="col-sm-6">
+                            <label class="control-label" for="edificioBeaconDaEliminare">Edificio</label><input class="form-control" id="edificioBeaconDaEliminare" required></select>
+                        </span>
+                        <span class="col-sm-6">
+                            <label class="control-label" for="pianoBeaconDaEliminare">Piano</label><input class="form-control" id="pianoBeaconDaEliminare" required></select>
+                        </span>
+                    </span>
+                    <br>
+                    <span>
+                        <span class="col-sm-4" style="text-align:center">
+                            <button class="btn btn-primary" onclick="confermaRimuoviBeacon()">Conferma</button>
+                        </span>
+                        <span class="col-sm-4"></span>
+                        <span class="col-sm-4" style="text-align:center">
+                            <button class="btn btn-reset" type="reset" onclick="javascript:document.location.reload()">Annulla</button>
+                        </span>
+                    </span>
+                </form>
+            </span>
+            <!-- FINE Rimuovi beacon -->
+            <!-- Associa beacon -->
+            <span class="col-sm-4 funzione" id="funzioneAssociaBeacon">
+                <span class="row">
+                    <span class="col-sm-6">
+                        <form>
+                            <label for="selectUtenteAssociareBeacon">Matricola</label>
+                            <select class="form-control" id="selectUtenteAssociareBeacon"></select>
+                            <label for="nomeUtenteAssociareBeacon">Nome</label>
+                            <input type="text" class="form-control" id="nomeUtenteAssociareBeacon" readonly>
+                            <label for="cognomeUtenteAssociareBeacon">Cognome</label>
+                            <input type="text" class="form-control" id="cognomeUtenteAssociareBeacon" readonly>
+                        </form>
+                    </span>
+                    <span class="col-sm-6">
+                        <form>
+                            <label for="selectBeaconAssociareBeacon">MAC</label>
+                            <select class="form-control" id="selectBeaconAssociareBeacon"></select>
+                            <label for="nomeBeaconAssociareBeacon">Nome</label>
+                            <input type="text" class="form-control" id="nomeBeaconAssociareBeacon" readonly>
+                            <label for="descrizioneBeaconAssociareBeacon">Descrizione</label>
+                            <input type="text" class="form-control" id="descrizioneBeaconAssociareBeacon" readonly>
+                            <span class="row">
+                                <span class="col-sm-6">
+                                    <label for="latBeaconAssociareBeacon">Latitudine</label>
+                                    <input type="text" class="form-control" id="latBeaconAssociareBeacon" readonly>
+                                </span>
+                                <span class="col-sm-6">
+                                    <label for="lngBeaconAssociareBeacon">Longitudine</label>
+                                    <input type="text" class="form-control" id="lngBeaconAssociareBeacon" readonly>
+                                </span>
+                            </span>
+                            <span class="row">
+                                <span class="col-sm-6">
+                                    <label for="edificioBeaconAssociareBeacon">Edificio</label>
+                                    <input type="text" class="form-control" id="edificioBeaconAssociareBeacon" readonly>
+                                </span>
+                                <span class="col-sm-6">
+                                    <label for="pianoBeaconAssociareBeacon">Piano</label>
+                                    <input type="text" class="form-control" id="pianoBeaconAssociareBeacon" readonly>
+                                </span>
+                            </span>
+                        </form>
+                    </span>
+                </span>
+                <span class="row">
+                    <span class="col-sm-6" style="text-align:center">
+                        <button type="submit" class="btn btn-primary" onclick="confermaAssociaBeacon()">Associa</button>
+                    </span>
+                    <span class="col-sm-6" style="text-align:center">
+                        <button type="reset" class="btn btn-reset" onclick="javascript:document.location.reload()">Annulla</button>
+                    </span>
+                </span>
+            </span>
+            <!-- FINE Associa beacon -->
+            <!-- Dissocia beacon -->
+            <span class="col-sm-4 funzione" id="funzioneDissociaBeacon">
+                <span class="row">
+                    <span class="col-sm-6">
+                        <form>
+                            <label for="selectUtenteDissociareBeacon">Matricola</label>
+                            <select class="form-control" id="selectUtenteDissociareBeacon"></select>
+                            <label for="nomeUtenteDissociareBeacon">Nome</label>
+                            <input type="text" class="form-control" id="nomeUtenteDissociareBeacon" readonly>
+                            <label for="cognomeUtenteDissociareBeacon">Cognome</label>
+                            <input type="text" class="form-control" id="cognomeUtenteDissociareBeacon" readonly>
+                        </form>
+                    </span>
+                    <span class="col-sm-6">
+                        <form>
+                            <label for="selectBeaconDissociareBeacon">MAC</label>
+                            <select class="form-control" id="selectBeaconDissociareBeacon"></select>
+                            <label for="nomeBeaconDissociareBeacon">Nome</label>
+                            <input type="text" class="form-control" id="nomeBeaconDissociareBeacon" readonly>
+                            <label for="descrizioneBeaconDissociareBeacon">Descrizione</label>
+                            <input type="text" class="form-control" id="descrizioneBeaconDissociareBeacon" readonly>
+                            <span class="row">
+                                <span class="col-sm-6">
+                                    <label for="latBeaconDissociareBeacon">Latitudine</label>
+                                    <input type="text" class="form-control" id="latBeaconDissociareBeacon" readonly>
+                                </span>
+                                <span class="col-sm-6">
+                                    <label for="lngBeaconDissociareBeacon">Longitudine</label>
+                                    <input type="text" class="form-control" id="lngBeaconDissociareBeacon" readonly>
+                                </span>
+                            </span>
+                            <span class="row">
+                                <span class="col-sm-6">
+                                    <label for="edificioBeaconDissociareBeacon">Edificio</label>
+                                    <input type="text" class="form-control" id="edificioBeaconDissociareBeacon" readonly>
+                                </span>
+                                <span class="col-sm-6">
+                                    <label for="pianoBeaconDissociareBeacon">Piano</label>
+                                    <input type="text" class="form-control" id="pianoBeaconDissociareBeacon" readonly>
+                                </span>
+                            </span>
+                        </form>
+                    </span>
+                </span>
+                <span class="row">
+                    <span class="col-sm-6" style="text-align:center">
+                        <button type="submit" class="btn btn-primary" onclick="confermaDissociaBeacon()">Dissocia</button>
+                    </span>
+                    <span class="col-sm-6" style="text-align:center">
+                        <button type="reset" class="btn btn-reset" onclick="javascript:document.location.reload()">Annulla</button>
+                    </span>
+                </span>
+            </span>
+            <!-- FINE Dissocia beacon -->
+            <!-- Gestisci beacon -->
+            <span class="col-sm-4 funzione" id="funzioneGestisciBeacon">
+                <form>
+                    <label class="control-label" for="macBeaconGestisci">MAC</label><select class="form-control" id="macBeaconGestisci"></select>
+                    <label class="control-label" for="nomeBeaconGestisci">Nome</label><input class="form-control" id="nomeBeaconGestisci" required></input>
+                    <label class="control-label" for="descrizioneBeaconGestisci">Descrizione</label><input class="form-control" id="descrizioneBeaconGestisci" required></input>
+                    <span class="row">
+                        <span class="col-sm-6">
+                            <label class="control-label" for="latBeaconGestisci">Latitudine</label><input class="form-control" id="latBeaconGestisci" required></input>
+                        </span>
+                        <span class="col-sm-6">
+                            <label class="control-label" for="lngBeaconGestisci">Longitudine</label><input class="form-control" id="lngBeaconGestisci" required></input>
+                        </span>
+                    </span>
+                    <span class="row">
+                        <span class="col-sm-6">
+                            <label class="control-label" for="edificioBeaconGestisci">Edificio</label><input class="form-control" id="edificioBeaconGestisci" required></select>
+                        </span>
+                        <span class="col-sm-6">
+                            <label class="control-label" for="pianoBeaconGestisci">Piano</label><input class="form-control" id="pianoBeaconGestisci" required></select>
+                        </span>
+                    </span>
+                    <br>
+                    <span>
+                        <span class="col-sm-4" style="text-align:center">
+                            <button class="btn btn-primary" onclick="confermaGestisciBeacon()">Salva</button>
+                        </span>
+                        <span class="col-sm-4"></span>
+                        <span class="col-sm-4" style="text-align:center">
+                            <button class="btn btn-reset" type="reset" onclick="javascript:document.location.reload()">Annulla</button>
+                        </span>
+                    </span>
+                </form>
+            </span>
+            <!-- FINE Gestisci beacon -->
+            <!-- Aggiungi utente -->
+            <span class="col-sm-4 funzione col-sm-offset-1" id="funzioneAggiungiUtente">
+                <form>
+                    <label for="matricolaNuovoUtente">Matricola</label>
+                    <input class="form-control" type="text" id="matricolaNuovoUtente">
+                    <label for="nomeNuovoUtente">Nome</label>
+                    <input class="form-control" type="text" id="nomeNuovoUtente">
+                    <label for="cognomeNuovoUtente">Cognome</label>
+                    <input class="form-control" type="text" id="cognomeNuovoUtente">
+                    <label for="passwordNuovoUtente">Password</label>
+                    <input class="form-control" type="password" id="passwordNuovoUtente">
+                </form>
+                <span class="row" style="text-align:center">
+                    <span class="col-sm-6">
+                            <button class="btn btn-primary" onclick="confermaAggiungiUtente()">Aggiungi</button>
+                    </span>
+                    <span class="col-sm-6">
+                            <button class="btn btn-reset" onclick="javascript:document.location.reload()">Annulla</button>
+                    </span>
+                </span>
+            </span>
+            <!-- FINE Aggiungi utente -->
+            <!-- Rimuovi utente -->
+            <span class="col-sm-4 col-sm-offset-1 funzione" id="funzioneRimuoviUtente">
+                <form>
+                    <label for="matricolaUtenteEliminare">Matricola</label>
+                    <select class="form-control" id="matricolaUtenteEliminare"></select>
+                    <label for="nomeUtenteEliminare">Nome</label>
+                    <input class="form-control" type="text" id="nomeUtenteEliminare" readonly>
+                    <label for="cognomeUtenteEliminare">Cognome</label>
+                    <input class="form-control" type="text" id="cognomeUtenteEliminare" readonly>
+                </form>
+                <span class="row" style="text-align:center">
+                    <span class="col-sm-6">
+                            <button class="btn btn-primary" onclick="confermaRimuoviUtente()">Rimuovi</button>
+                    </span>
+                    <span class="col-sm-6">
+                            <button class="btn btn-reset" onclick="javascript:document.location.reload()">Annulla</button>
+                    </span>
+                </span>
+            </span>
+            <!-- FINE Rimuovi utente -->
+            <!-- Gestisci utente -->
+            <span class="col-sm-4 col-sm-offset-1 funzione" id="funzioneGestisciUtente">
+                <form>
+                    <label for="matricolaGestisciUtente">Matricola</label>
+                    <input class="form-control" type="text" id="matricolaGestisciUtente" readonly>
+                    <label for="nomeGestisciUtente">Nome</label>
+                    <input class="form-control" type="text" id="nomeGestisciUtente" required>
+                    <label for="cognomeGestisciUtente">Cognome</label>
+                    <input class="form-control" type="text" id="cognomeGestisciUtente" required>
+                </form>
+                <span class="row" style="text-align:center">
+                    <span class="col-sm-6">
+                            <button class="btn btn-primary" onclick="confermaGestisciUtente()">Salva</button>
+                    </span>
+                    <span class="col-sm-6">
+                            <button class="btn btn-reset" onclick="javascript:document.location.reload()">Annulla</button>
+                    </span>
+                </span>
+            </span>
+            <!-- FINE Gestisci utente -->
+            <!-- Aggiungi permesso -->
+            <span class="col-sm-4 col-sm-offset-1 funzione" id="funzioneAggiungiPermesso"> 
+                <form>
+                    <label for="idAggiungiPermesso">ID</label>
+                    <input type="text" class="form-control" id="idAggiungiPermesso" value="Automatico" readonly>
+                    <label for="nomeAggiungiPermesso">Nome</label>
+                    <input type="text" class="form-control" id="nomeAggiungiPermesso" required>
+                    <label for="descrizioneAggiungiPermesso">Descrizione</label>
+                    <input type="text" class="form-control" id="descrizioneAggiungiPermesso" required>
+                    <span class="col-sm-6" style="text-align:center">
+                        <br>
+                        <button type="submit" class="btn btn-primary" onclick="confermaAggiungiPermesso()">Aggiungi</button>
+                    </span>
+                    <span class="col-sm-6" style="text-align:center">
+                        <br>
+                        <button type="reset" class="btn btn-reset" onclick="javascript:document.location.reload()">Annulla</button>
+                    </span>
+                </form>
+            </span>
+            <!-- FINE Aggiungi permesso -->
+            <!-- Rimuovi permesso -->
+            <span class="col-sm-4 col-sm-offset-1 funzione" id="funzioneRimuoviPermesso">
+                <span class="row">
+                    <span class="col-sm-1"></span>
+                    <span class="col-sm-10">
+                        <form>
+                            <label for="selectPermessoDaEliminare">ID</label>
+                            <select class="form-control" id="selectPermessoDaEliminare"></select>
+                            <label for="nomePermessoDaEliminare">Nome</label>
+                            <input type="text" class="form-control" id="nomePermessoDaEliminare" readonly>
+                            <label for="descrizionePermessoDaEliminare">Descrizione</label>
+                            <input type="text" class="form-control" id="descrizionePermessoDaEliminare" readonly>
+                            <span class="col-sm-6" style="text-align:center">
+                                <br>
+                                <button type="submit" class="btn btn-primary" onclick="confermaEliminaPermesso()">Rimuovi</button>
+                            </span>
+                            <span class="col-sm-6" style="text-align:center">
+                                <br>
+                                <button type="reset" class="btn btn-reset" onclick="javascript:document.location.reload()">Annulla</button>
+                            </span>
+                        </form>
+                    </span>                    
+                    <span class="col-sm-1"></span>                    
+                </span>
+            </span>
+            <!-- FINE Rimuovi permesso -->
+            <!-- Associa permesso -->
+            <span class="col-sm-4 col-sm-offset-1 funzione" id="funzioneAssociaPermesso">
+                <span class="row">
+                    <span class="col-sm-6">
+                        <form>
+                            <label for="selectUtenteAssociarePermesso">Matricola</label>
+                            <select class="form-control" id="selectUtenteAssociarePermesso"></select>
+                            <label for="nomeUtenteAssociarePermesso">Nome</label>
+                            <input type="text" class="form-control" id="nomeUtenteAssociarePermesso" readonly>
+                            <label for="cognomeUtenteAssociarePermesso">Cognome</label>
+                            <input type="text" class="form-control" id="cognomeUtenteAssociarePermesso" readonly>
+                        </form>
+                    </span>
+                    <span class="col-sm-6">
+                        <form>
+                            <label for="selectPermessoAssociarePermesso">ID</label>
+                            <select class="form-control" id="selectPermessoAssociarePermesso"></select>
+                            <label for="nomePermessoAssociarePermesso">Nome</label>
+                            <input type="text" class="form-control" id="nomePermessoAssociarePermesso" readonly>
+                            <label for="descrizionePermessoAssociarePermesso">Descrizione</label>
+                            <input type="text" class="form-control" id="descrizionePermessoAssociarePermesso" readonly>
+                        </form>
+                    </span>
+                </span>
+                <span class="row">
+                    <span class="col-sm-6" style="text-align:center">
+                        <button type="submit" class="btn btn-primary" onclick="confermaAssociaPermesso()">Associa</button>
+                    </span>
+                    <span class="col-sm-6" style="text-align:center">
+                        <button type="reset" class="btn btn-reset" onclick="javascript:document.location.reload()">Annulla</button>
+                    </span>
+                </span>
+            </span>
+            <!-- FINE Associa permesso -->
+            <!-- Dissocia permesso -->
+            <span class="col-sm-4 col-sm-offset-1 funzione" id="funzioneDissociaPermesso">
+                <span class="row">
+                    <span class="col-sm-6">
+                        <form>
+                            <label for="selectUtenteDissociarePermesso">Matricola</label>
+                            <select class="form-control" id="selectUtenteDissociarePermesso"></select>
+                            <label for="nomeUtenteDissociarePermesso">Nome</label>
+                            <input type="text" class="form-control" id="nomeUtenteDissociarePermesso" readonly>
+                            <label for="cognomeUtenteDissociarePermesso">Cognome</label>
+                            <input type="text" class="form-control" id="cognomeUtenteDissociarePermesso" readonly>
+                        </form>
+                    </span>
+                    <span class="col-sm-6">
+                        <form>
+                            <label for="selectPermessoDissociarePermesso">ID</label>
+                            <select class="form-control" id="selectPermessoDissociarePermesso" required></select>
+                            <label for="nomePermessoDissociarePermesso">Nome</label>
+                            <input type="text" class="form-control" id="nomePermessoDissociarePermesso" readonly>
+                            <label for="descrizionePermessoDissociarePermesso">Descrizione</label>
+                            <input type="text" class="form-control" id="descrizionePermessoDissociarePermesso" readonly>
+                        </form>
+                    </span>
+                </span>
+                <span class="row">
+                    <span class="col-sm-6" style="text-align:center">
+                        <button type="submit" class="btn btn-primary" onclick="confermaDissociaPermesso()">Dissocia</button>
+                    </span>
+                    <span class="col-sm-6" style="text-align:center">
+                        <button type="reset" class="btn btn-reset" onclick="javascript:document.location.reload()">Annulla</button>
+                    </span>
+                </span>
+            </span>
+            <!-- FINE Dissocia permesso -->
+            <!-- Gestisci permesso -->
+            <span class="col-sm-4 col-sm-offset-1 funzione" id="funzioneGestisciPermesso">
+                <span class="row">
+                    <span class="col-sm-2"></span>
+                    <span class="col-sm-9">
+                        <form>
+                            <label for="selectPermessoGestisci">ID</label>
+                            <select class="form-control" id="selectPermessoGestisci" required></select>
+                            <label for="nomePermessoGestisci">Nome</label>
+                            <input type="text" class="form-control" id="nomePermessoGestisci" required>
+                            <label for="descrizionePermessoGestisci">Descrizione</label>
+                            <input type="text" class="form-control" id="descrizionePermessoGestisci" required>
+                        </form>
+                    </span>
+                    <span class="col-sm-1"></span>
+                </span>
+                <span class="row">
+                    <span class="col-sm-6" style="text-align:center">
+                        <button type="submit" class="btn btn-primary" onclick="confermaGestisciPermesso()">Salva</button>
+                    </span>
+                    <span class="col-sm-6" style="text-align:center">
+                        <button type="reset" class="btn btn-reset" onclick="javascript:document.location.reload()">Annulla</button>
+                    </span>
+                </span>
+            </span>
+            <!-- FINE Gestisci permesso -->
+            <span class="col-sm-3" id="spazioPostFunzionalita"></span>
+        </span>
+        <script src="./js/pannello.js"></script>
+    </script>
+    </body>
+</html>

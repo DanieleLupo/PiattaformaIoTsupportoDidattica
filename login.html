@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Login</title>
+        <link rel="stylesheet" type="text/css" href="login.css">
+        <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
+        <meta charset="UTF-8">
+        <!-- <script src="./bootstrap/js/bootstrap.min.js"></script> -->
+    </head>
+    <body>
+        <div class="wrapper">
+            <form class="form-signin" method="POST">       
+                <h3 class="form-signin-heading center">Entra per gestire i beacons</h3>
+                <input type="text" class="form-control" name="username" placeholder="Username" required autofocus />
+                <input type="password" class="form-control" name="password" placeholder="Password" required/>      
+                <button class="btn btn-lg btn-primary btn-block" onclick="login()">Entra</button>
+                <button class="btn btn-lg btn-basic btn-block" onclick="richiediCredenziali()" type="button">Richiedi credenziali</button>
+            </form>
+        </div>
+        <script src="./js/login.js"></script>
+        <script src="./js/gestoreCookie.js"></script>
+    </body>
+</html>

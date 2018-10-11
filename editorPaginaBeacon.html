@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Editor</title>
+    <script src="./js/gestoreCookie.js"></script>
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./editorPaginaBeacon.css">
+</head>
+<body>
+    <!-- TODO: Creare descrizione gestisci beacon -->
+    <!-- Barra utente -->
+    <div style="background:#FF9900; height:50px; margin-top:-5px">
+        <!-- Informazioni utente loggato -->
+        <h3 id="labelInfoUtente"></h3>
+        <span style="position:absolute;right:0;padding-top:0.5%; padding-right:1%">
+            <button class="btn btn-primary" onclick="salva()">Salva</button>
+            <button class="btn btn-default" onclick="annulla()">Annulla</button>
+        </span>
+    </div>
+    <!-- Descrizione -->
+    <div class="row">
+        <span class="col-sm-12" style="text-align:center; margin-top:-15px">
+            <h2>Editor beacon <span id="macBeacon"></span></h3>
+            <h3 id="descrizioneIniziale">Per iniziare, selezionare una delle seguenti funzionalit&agrave;</h3>
+            <h4>*Per andare a capo utilizzare il tag &lt;br&gt;</h4>
+        </span>
+    </div>
+    <!-- Riga della funzioni disponibili -->
+    <div class="row" style="margin-top:15px;margin-bottom: 15px" id="rigaIniziale">
+        <span class="col-sm-1"></span>
+        <span class="col-sm-10" style="text-align:center;">
+            <button class="btn" onclick="inserisciTesto()">Inserisci testo</button>
+            <button class="btn" onclick="inserisciImmagine()">Inserisci immagine</button>
+            <button class="btn" onclick="inserisciVideo()">Inserisci video</button>
+        </span>
+        <span class="col-sm-1"></span>
+    </div>
+    <div class="row" style="margin-top:15px">
+        <span class="col-sm-12" style="text-align:center">
+            <div id="albero">
+                
+            </div>
+        </span>
+    </div>
+    <script src="./editorPaginaBeacon.js"></script>    
+</body>
+</html>

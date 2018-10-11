@@ -1,0 +1,54 @@
+#labelInfoUtente{
+    display: inline-block;
+    margin-left:1%;
+    position: relative;
+    bottom: 7px;
+}
+#messaggioIniziale{
+    font-size: 36pt;
+    text-align: center;
+}
+
+
+/* Menu a tendina */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 28px;
+    left:0;
+    background-color: #f9f9f9;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 5%;
+    padding:5% 5% 5% 5%;
+}
+.dropdown:hover .dropdown-content {
+    display: inline-block;
+}
+
+.dropdown button{
+    background: none;
+}
+.dropdown-content button{
+    display:none;
+}
+#operazioni{
+    position:absolute;
+    right:0;
+}
+.nascondi{
+    display:none;
+}
+h1{
+    text-align: center;
+}
+h4{
+    text-align: center;
+}
+label{
+    font-size: 125%;
+}
+
+#listaBeacons li:hover{
+    cursor: pointer;
+}
